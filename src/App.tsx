@@ -22,6 +22,7 @@ export function App() {
   const [remoteMessages, setRemoteMessages] = useState<string>("");
 
   useEffect(() => {
+    // @ts-expect-error Untyped event
     const updateConnectionState = (e: Event) => setConnectionState(e.target.connectionState);
     connection.addEventListener("connectionstatechange", updateConnectionState);
 
@@ -141,19 +142,23 @@ function createConnection() {
   });
 
   connection.addEventListener("connectionstatechange", (e) =>
+    // @ts-expect-error Untyped event
     console.log("connectionstatechange", e.target.connectionState, e)
   );
   connection.addEventListener("datachannel", (e) => console.log("datachannel", e));
   connection.addEventListener("icecandidate", (e) => console.log("icecandidate", e));
   connection.addEventListener("icecandidateerror", (e) => console.log("icecandidateerror", e));
   connection.addEventListener("iceconnectionstatechange", (e) =>
+    // @ts-expect-error Untyped event
     console.log("iceconnectionstatechange", e.target.iceConnectionState, e)
   );
   connection.addEventListener("icegatheringstatechange", (e) =>
+    // @ts-expect-error Untyped event
     console.log("icegatheringstatechange", e.target.iceGatheringState, e)
   );
   connection.addEventListener("negotiationneeded", (e) => console.log("negotiationneeded", e));
   connection.addEventListener("signalingstatechange", (e) =>
+    // @ts-expect-error Untyped event
     console.log("signalingstatechange", e.target.signalingState, e)
   );
   connection.addEventListener("track", (e) => console.log("track", e));
@@ -178,6 +183,7 @@ function gatherICECandidates(connection: RTCPeerConnection) {
         candidates.push(e.candidate);
       }
 
+      // @ts-expect-error Untyped event
       if (e.target.iceGatheringState === "complete") {
         resolve(candidates);
       }
