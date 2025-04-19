@@ -7,17 +7,12 @@ type Offer = {
 
 const { connection, channel: initialChannel } = createConnection();
 
-await connection.setLocalDescription();
-const iceCandidates = await gatherICECandidates(connection);
-
 export function App() {
   const [connectionState, setConnectionState] = useState(connection.connectionState);
-  const [localOffer, setLocalOffer] = useState<Offer>({
-    description: connection.localDescription,
-    iceCandidates,
-  });
+  const [localOffer, setLocalOffer] = useState<Offer>();
   const [remoteOffer, setRemoteOffer] = useState<Offer>();
 
+  const [channel, setChannel] = useState<RTCDataChannel>();
   const [localMessages, setLocalMessages] = useState<string>("");
   const [remoteMessages, setRemoteMessages] = useState<string>("");
 
@@ -31,7 +26,13 @@ export function App() {
     };
   }, []);
 
-  const [channel, setChannel] = useState<RTCDataChannel>();
+  useEffect(() => {
+    (async () => {
+      await connection.setLocalDescription();
+      const iceCandidates = await gatherICECandidates(connection);
+      setLocalOffer({ description: connection.localDescription, iceCandidates });
+    })();
+  }, []);
 
   useEffect(() => {
     const setDataChannel = (e: RTCDataChannelEvent) => setChannel(e.channel);
