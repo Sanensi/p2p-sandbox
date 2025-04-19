@@ -92,14 +92,14 @@ export function App() {
                   assert(remoteOffer.description && typeof remoteOffer.description === "object");
                   assert(Array.isArray(remoteOffer.iceCandidates));
 
-                  await connection.setRemoteDescription(remoteOffer.description);
                   setRemoteOffer(remoteOffer);
+                  await connection.setRemoteDescription(remoteOffer.description);
+                  for (const candidate of remoteOffer.iceCandidates) {
+                    await connection.addIceCandidate(candidate);
+                  }
 
                   if (remoteOffer.description.type === "offer") {
                     await connection.setLocalDescription();
-                    for (const candidate of remoteOffer.iceCandidates) {
-                      await connection.addIceCandidate(candidate);
-                    }
                     const iceCandidates = await gatherICECandidates(connection);
                     setLocalOffer({
                       description: connection.localDescription,
