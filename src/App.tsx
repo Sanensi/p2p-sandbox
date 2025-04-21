@@ -190,6 +190,13 @@ function gatherICECandidates(connection: RTCPeerConnection) {
       }
     });
 
+    connection.addEventListener("icegatheringstatechange", (e) => {
+      // @ts-expect-error Untyped event
+      if (e.target.iceGatheringState === "complete") {
+        resolve(candidates);
+      }
+    });
+
     setTimeout(() => reject(new Error("Gather ICE candidates timeout")), 1000);
   });
 }
