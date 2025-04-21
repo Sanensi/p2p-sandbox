@@ -2,6 +2,8 @@
 name: Deploy
 
 on:
+  push:
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -16,6 +18,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
     steps:
       - uses: actions/checkout@v3
       - uses: oven-sh/setup-bun@v1
@@ -27,6 +33,7 @@ jobs:
         with:
           path: ./dist
 
+          
   deploy:
     runs-on: ubuntu-latest
     environment:
